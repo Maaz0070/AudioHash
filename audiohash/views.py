@@ -23,7 +23,7 @@ def index(request):
     HashTable = [[] for _ in range(10)]
 
     def Hashing(keyValue):
-        return ord(keyValue) # % len(HashTable)
+        return ord(keyValue) #% len(HashTable)
 
     def insert(Hashtable, keyValue, value):
         hash_key = Hashing(keyValue)
