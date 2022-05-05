@@ -11,7 +11,7 @@ def index(request):
 
     r = sr.Recognizer()
 
-    with sr.AudioFile('/Users/mymac/Downloads/lexclip.wav') as source:
+    with sr.AudioFile('/Users/kenny/Movies/Movavi_Library/Snot.wav') as source:
         audio = r.listen(source)
         try:
             text = r.recognize_google(audio)
