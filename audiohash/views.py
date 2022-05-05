@@ -6,6 +6,32 @@ import requests
 import speech_recognition as sr
 import pyttsx3
 
+#functions for hashing-chainign:
+# Function to display hashtable
+def display_hash(hashTable):
+      
+    for i in range(len(hashTable)):
+        print(i, end = " ")
+          
+        for j in hashTable[i]:
+            print("-->", end = " ")
+            print(j, end = " ")
+              
+        print()
+  
+  
+# Hashing Function to return 
+# key for every value.
+def Hashing(keyvalue, Hashtable):
+    return keyvalue % len(Hashtable)
+  
+  
+# Insert Function to add
+# values to the hash table
+def insert(Hashtable, keyvalue, value):
+    hash_key = Hashing(keyvalue, Hashtable)
+    Hashtable[hash_key].append(value)
+
 # Create your views here.
 def index(request):
 
@@ -20,31 +46,17 @@ def index(request):
         except:
             print("Sorry.. run again...")
 
-    HashTable = [[] for _ in range(10)]
-
-    def Hashing(keyValue):
-        return ord(keyValue) # % len(HashTable)
-
-    def insert(Hashtable, keyValue, value):
-        hash_key = Hashing(keyValue)
-        Hashtable[hash_key].append(value)
-
-    def display_hash(hashTable):
-        for i in range(len(hashTable)):
-            print(i, end = " ")
-            
-            for j in hashTable[i]:
-                print("-->", end = " ")
-                print(j, end = " ")
-                
-            print()
-
     res = text.split()
-    key = 0
+
+    # Creating Hashtable as 
+    # a nested list.
+    HashTable = [[] for _ in range(len(res))]
 
     for i in res:
-        key += 1
-        insert(HashTable, i, key)
+        key = 0
+        for j in i:
+            key += ord(j)
+        insert(HashTable, key, i)
     
     display_hash(HashTable)
         
