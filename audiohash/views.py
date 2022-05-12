@@ -8,6 +8,7 @@ import pyttsx3
 from timeit import default_timer as timer
 
 wordCounts = 0
+wordCount = 0
 
 #functions for hashing-chainign:
 # Function to display hashtable
@@ -41,8 +42,8 @@ def HashingH(keyvalue, Hashtable):
 def insert(Hashtable, keyvalue, value):
     hash_key = keyvalue % len(Hashtable)
     Hashtable[hash_key].append(value)
+
 def insertM(Hashtable,keyvalue, value):
-   
     A = .68
     hashLength = len(Hashtable)
     hash_key = keyvalue * A
@@ -100,72 +101,77 @@ def searchOccurence(word, Hashtable):
     index = Hashing(word, Hashtable)
     index = index % len(Hashtable)
     print("holo: " + str(index))
+    print("holo: " + str(len(Hashtable[index])))
     return len(Hashtable[index])
 
 
 
 # Create your views here.
 def index(request):
-    
 
+    if request.method == "POST":
 
-        r = sr.Recognizer()
+            fileName = request.POST["myfile"]
+            print(fileName)
 
-        with sr.AudioFile('/Users/kenny/Movies/Movavi_Library/Podcast.wav' ) as source:
-            audio = r.listen(source)
-            try:
-                text = r.recognize_google(audio)
-                print("Working on...")
-            except:
-                print("Sorry.. run again...")
+            r = sr.Recognizer()
 
-        res = text.split()
+            with sr.AudioFile('/Users/mymac/Downloads/' + fileName ) as source:
+                audio = r.listen(source)
+                try:
+                    text = r.recognize_google(audio)
+                    print("Working on...")
+                except:
+                    print("Sorry.. run again...")
 
-        # Creating Hashtable as 
-        # a nested list.
-        HashTable = [[] for _ in range(len(res))]
-        start1 = timer()
-        for i in res:
-            key = Hashing(i, HashTable)
-            if(i != "but" and i != "always" and i != "how" and i != "not" and i != "you" and i != "be" and i != "which" and i != "they're" and i != "do" and i != "as" and i != "of" and i != "right" and i != "we" and i != "is" and i != "to" and i != "that" and i != "like" and i != "than" and i != "were" and i != "sure" and i != "very" and i != "and" and i != "the" and i != "them" and i != "did" and i != "actually"):
-                insert(HashTable, key, i)
-        end1 = timer()
-        wordCount = searchOccurence("autopilot", HashTable)
-        display_hash(HashTable)
+            res = text.split()
 
-        HashTableH = [None] * len(res)
-        HashTableM = [None ] * len(res)
-        start2 = timer()
-        for i in res:
-            key = 0
-            for j in i:
-                key += ord(j)
-            insertH(HashTableH, key, i)
-        end2 = timer()
-        start3 = timer()
-        for i in res:
-            key = 0
-            for j in i:
-                key += ord(j)
-            insertM(HashTableM, key, i)
-        end3 = timer()
-        print ("The word count is ", wordCounts)
-        display_hash(HashTableH)
-        display_hash(HashTableM)
-        print("Timer for ASCII hashing function:", end1 - start1)
-        print("Timer for Division hashing function: ", end2 - start2)
-        print("Timer for Multiplication hashing function:", end3 - start3)
-        
+            # Creating Hashtable as 
+            # a nested list.
+            HashTable = [[] for _ in range(len(res))]
+            start1 = timer()
+            for i in res:
+                key = Hashing(i, HashTable)
+                if(i != "but" and i != "always" and i != "how" and i != "not" and i != "you" and i != "be" and i != "which" and i != "they're" and i != "do" and i != "as" and i != "of" and i != "right" and i != "we" and i != "is" and i != "to" and i != "that" and i != "like" and i != "than" and i != "were" and i != "sure" and i != "very" and i != "and" and i != "the" and i != "them" and i != "did" and i != "actually"):
+                    insert(HashTable, key, i)
+            end1 = timer()
+            wordCount = searchOccurence("autopilot", HashTable)
+            display_hash(HashTable)
 
+            HashTableH = [None] * len(res)
+            HashTableM = [None ] * len(res)
+            start2 = timer()
+            for i in res:
+                key = 0
+                for j in i:
+                    key += ord(j)
+                insertH(HashTableH, key, i)
+            end2 = timer()
+            start3 = timer()
+            for i in res:
+                key = 0
+                for j in i:
+                    key += ord(j)
+                insertM(HashTableM, key, i)
+            end3 = timer()
+            print ("The word count is ", wordCounts)
+            display_hash(HashTableH)
+            display_hash(HashTableM)
+            print("Timer for ASCII hashing function:", end1 - start1)
+            print("Timer for Division hashing function: ", end2 - start2)
+            print("Timer for Multiplication hashing function:", end3 - start3)
+            
 
-        
+            return render(request, "audiohash/main.html", {
+                "text": text,
+                "hash": HashTable,
+                "wordCount": wordCount,
+                "HashTableH": HashTableH,
+                "HashTableM": HashTableM,
+                "wordCounts": wordCounts
+            })
 
-        return render(request, "audiohash/main.html", {
-            "text": text,
-            "hash": HashTable,
-            "wordCount": wordCounts,
-            "HashTableH": HashTableH,
-            "HashTableM": HashTableM,
-            "wordCounts": wordCounts
-        })
+    else:
+        return render(request, "audiohash/main.html")
+
     
