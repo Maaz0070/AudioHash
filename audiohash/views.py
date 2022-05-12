@@ -10,6 +10,8 @@ from timeit import default_timer as timer
 wordCounts = 0
 wordCount = 0
 HashTable = [[]]
+HashTableH = [[]]
+HashTableM = [[]]
 
 mostIndex = []
 #functions for hashing-chainign:
@@ -47,13 +49,19 @@ def Hashing(res, Hashtable):
     return key #% len(Hashtable)
     #return keyvalue % len(Hashtable)
 
-def HashingH(keyvalue, Hashtable):
+def HashingH(res, Hashtable):
+    keyvalue = 0
+    for i in res:
+        keyvalue += ord(i)
     return keyvalue % len(Hashtable)
 
-def HashingM(keyvalue,Hashtable):
+def HashingM(res,Hashtable):
+    key = 0
+    for i in res:
+        key += ord(i)
     A = .68
     hashLength = len(Hashtable)
-    hash_key = keyvalue * A
+    hash_key = key * A
     hash_key = hash_key % 1
     hash_key = hash_key * hashLength
     hash_key = math.floor(hash_key)
@@ -66,60 +74,48 @@ def insert(Hashtable, keyvalue, value):
     hash_key = keyvalue #% len(Hashtable)
     Hashtable[hash_key].append(value)
 
-def insertM(Hashtable,keyvalue, value):
-    A = .68
-    hashLength = len(Hashtable)
-    hash_key = keyvalue * A
-    hash_key = hash_key % 1
-    hash_key = hash_key * hashLength
-    
-    
-    hash_key = math.floor(hash_key)
-    print(Hashtable[hash_key])
-   
-    hash_key = HashingM(keyvalue,Hashtable)
+def insertM(Hashtable,key, value):
+    global wordCount
     flag = False
-    
-    if Hashtable[hash_key] == " ":
+    hash_key = key % len(Hashtable)
+    if Hashtable[hash_key] == []:
         print("no collision")
-        Hashtable[hash_key] = value
-        flag = True
-    elif Hashtable[hash_key] == value and flag == False:
-        Hashtable[hash_key] = Hashtable[hash_key] + " " + value
+        Hashtable[hash_key].append(value)
+    elif Hashtable[hash_key][0] == value:
+        Hashtable[hash_key].append(value)
     else:
-        while(Hashtable[hash_key] != " "):
+        flag = True
+        while(Hashtable[hash_key] != []):
             hash_key += 1
-            if hash_key >= len(Hashtable):
+            if(hash_key >= len(Hashtable)):
                 hash_key = 0
-            if Hashtable[hash_key] == value and flag == False:
-                Hashtable[hash_key] = Hashtable[hash_key] + " " + value
+            if(Hashtable[hash_key]!= []):
+                if(Hashtable[hash_key][0] == value):
+                    Hashtable[hash_key].append(value)
+                    flag = False
         if flag == True:
-            Hashtable[hash_key] = value
+            Hashtable[hash_key].append(value)
    
 def insertH(Hashtable, keyvalue, value):
-    global wordCounts
-
-    hash_key = HashingH(keyvalue, Hashtable)
-
-    print(Hashtable[hash_key])
-    flag = False
-    if len(value) > 0:
-        wordCounts += 1
-    if Hashtable[hash_key] == " ":
+   global wordCount
+   hash_key = keyvalue % len(Hashtable)
+   if Hashtable[hash_key] == []:
         print("no collision")
-        Hashtable[hash_key] = value
+        Hashtable[hash_key].append(value)
+   elif Hashtable[hash_key][0] == value:
+        Hashtable[hash_key].append(value)
+   else:
         flag = True
-    elif Hashtable[hash_key] == value and flag == False:
-        Hashtable[hash_key] = Hashtable[hash_key] + " " + value
-    else:
-        while(Hashtable[hash_key] != " "):
+        while(Hashtable[hash_key] != []):
             hash_key += 1
-            if hash_key >= len(Hashtable):
+            if(hash_key >= len(Hashtable)):
                 hash_key = 0
-            if Hashtable[hash_key] == value and flag == False:
-                Hashtable[hash_key] = Hashtable[hash_key] + " " + value
+            if(Hashtable[hash_key]!= []):
+                if(Hashtable[hash_key][0] == value):
+                    Hashtable[hash_key].append(value)
+                    flag = False
         if flag == True:
-            Hashtable[hash_key] = value
+            Hashtable[hash_key].append(value)
 
 
 def searchOccurence(word, Hashtable):
@@ -137,24 +133,35 @@ def searchOccurence(word, Hashtable):
 
 def searchOccurenceH(word, Hashtable):
     res = 0
-    asc = toASC(word)
-    index = HashingH(asc, Hashtable)
+    index = HashingH(word, Hashtable)
+    print("holoH: " + str(index))
+    print("holoH: " + str(len(Hashtable[index])))
+    
+    for i in range(len(Hashtable[index])):
+        if(Hashtable[index][i] == word):
+            res += 1
 
-    print("index: " + str(index))
-    if(Hashtable[index] == ' '):
-        return 0
-    else:
-        for i in range(len(Hashtable[index])):
-            if i == ' ':
-                res += 1
-    print("HashingH wordCount: " + str(res+1))
-    return res + 1
+    return res
+
+def searchOccurenceM(word, Hashtable):
+    res = 0
+    index = HashingM(word, Hashtable)
+    print("holoM: " + str(index))
+    print("holoM: " + str(len(Hashtable[index])))
+    
+    for i in range(len(Hashtable[index])):
+        if(Hashtable[index][i] == word):
+            res += 1
+
+    return res
 
 
 
 # Create your views here.
 def index(request):
     global HashTable
+    global HashTableH
+    global HashTableM
 
     if request.method == "POST":
 
@@ -179,26 +186,22 @@ def index(request):
             start1 = timer()
             for i in res:
                 key = Hashing(i, HashTable)
-                if(i != "but" and i != "always" and i != "how" and i != "not" and i != "you" and i != "be" and i != "which" and i != "they're" and i != "do" and i != "as" and i != "of" and i != "right" and i != "we" and i != "is" and i != "to" and i != "that" and i != "like" and i != "than" and i != "were" and i != "sure" and i != "very" and i != "and" and i != "the" and i != "them" and i != "did" and i != "actually"):
-                    insert(HashTable, key, i)
+                insert(HashTable, key, i)
             end1 = timer()
             display_hash(HashTable)
 
-            HashTableH = [' '] * len(res)
-            HashTableM = [' '] * len(res)
+            HashTableH = [[] for _ in range(len(res))]
+            HashTableM = [[] for _ in range(len(res))]
             start2 = timer()
             for i in res:
-                key = 0
-                for j in i:
-                    key += ord(j)
-                insertH(HashTableH, key, i)
+                key = HashingH(i,HashTable)
+                insertH(HashTableH,key,i)
             end2 = timer()
             start3 = timer()
             for i in res:
-                key = 0
-                for j in i:
-                    key += ord(j)
-                insertM(HashTableM, key, i)
+                key = HashingM(i,HashTable)
+                print(key, " ", i)
+                insertM(HashTableM,key,i)
             end3 = timer()
 
             print ("The word count is ", wordCounts)
@@ -223,12 +226,18 @@ def index(request):
 
 def search(request):
     global HashTable
+    global HashTableH
+    global HashTableM
     if request.method == "POST":
         query = request.POST["search"]
         res = searchOccurence(query, HashTable)
+        # resH = searchOccurenceH(query, HashTableH)
+        # resM = searchOccurenceM(query, HashTableM)
         print("res: " + str(res))
         return render(request, "audiohash/result.html", {
                 "searchCount": res
+                # "searchCountH": resH,
+                # "searchCountM": resM
             })
     else:
         return render(request, "audiohash/result.html")
