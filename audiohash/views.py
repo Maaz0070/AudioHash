@@ -11,34 +11,8 @@ wordCounts = 0
 mostIndex = []
 #functions for hashing-chainign:
 # Function to display hashtable
-def mostOccurASCII(hashTable):
-    currMax = 0
-    
-def mostOccur(hashTable):
-    global mostIndex
-    currMax = 0
-    for i in range(len(hashTable)):
-        j = hashTable[i] 
-        if(j != None):
-            for x in range(0,len(j)):
-                 space = 0
-                 if j[x] == ' ':
-                     space += 1
-                 if space >= currMax and not mostIndex:
-                     currMax = space
-                     mostIndex.append(i)
-                 elif space == currMax and len(mostIndex) > 0:
-                     currMax = space
-                     mostIndex.append(i)
-                 elif space > currMax and len(mostIndex) > 0:
-                     currMax = space
-                     mostIndex.clear()
-                     mostIndex.append(i)
-                     
-                 
-    
-    for i in range (len(mostIndex)):
-        print(hashTable[mostIndex[i]])
+ 
+
 def display_hash(hashTable):
       
     for i in range(len(hashTable)):
