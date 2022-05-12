@@ -8,14 +8,44 @@ import pyttsx3
 from timeit import default_timer as timer
 
 wordCounts = 0
-
+mostIndex = []
 #functions for hashing-chainign:
 # Function to display hashtable
+def mostOccurASCII(hashTable):
+    currMax = 0
+    
+def mostOccur(hashTable):
+    global mostIndex
+    currMax = 0
+    for i in range(len(hashTable)):
+        j = hashTable[i] 
+        if(j != None):
+            for x in range(0,len(j)):
+                 space = 0
+                 if j[x] == ' ':
+                     space += 1
+                 if space >= currMax and not mostIndex:
+                     currMax = space
+                     mostIndex.append(i)
+                 elif space == currMax and len(mostIndex) > 0:
+                     currMax = space
+                     mostIndex.append(i)
+                 elif space > currMax and len(mostIndex) > 0:
+                     currMax = space
+                     mostIndex.clear()
+                     mostIndex.append(i)
+                     
+                 
+    
+    for i in range (len(mostIndex)):
+        print(hashTable[mostIndex[i]])
 def display_hash(hashTable):
       
     for i in range(len(hashTable)):
         print(i, end = " ")
         j = hashTable[i]
+        if j == None:
+            print(" ")
         if j != None:
             print("-->", end = " ")
             print(j, end = " ")
@@ -50,22 +80,19 @@ def HashingM(keyvalue,Hashtable):
 def insert(Hashtable, keyvalue, value):
     hash_key = keyvalue % len(Hashtable)
     Hashtable[hash_key].append(value)
-      
-      
 def insertM(Hashtable,keyvalue, value):
    
-  hash_key = HashingM(keyvalue,Hashtable)
-    
+    hash_key = HashingM(keyvalue,Hashtable)
     flag = False
     
-    if Hashtable[hash_key] == None:
+    if Hashtable[hash_key] == " ":
         print("no collision")
         Hashtable[hash_key] = value
         flag = True
     elif Hashtable[hash_key] == value and flag == False:
         Hashtable[hash_key] = Hashtable[hash_key] + " " + value
     else:
-        while(Hashtable[hash_key] != None):
+        while(Hashtable[hash_key] != " "):
             hash_key += 1
             if hash_key >= len(Hashtable):
                 hash_key = 0
@@ -83,14 +110,14 @@ def insertH(Hashtable, keyvalue, value):
     flag = False
     if len(value) > 0:
         wordCounts += 1
-    if Hashtable[hash_key] == None:
+    if Hashtable[hash_key] == " ":
         print("no collision")
         Hashtable[hash_key] = value
         flag = True
     elif Hashtable[hash_key] == value and flag == False:
         Hashtable[hash_key] = Hashtable[hash_key] + " " + value
     else:
-        while(Hashtable[hash_key] != None):
+        while(Hashtable[hash_key] != " "):
             hash_key += 1
             if hash_key >= len(Hashtable):
                 hash_key = 0
@@ -137,8 +164,8 @@ def index(request):
         wordCount = searchOccurence("autopilot", HashTable)
         display_hash(HashTable)
 
-        HashTableH = [None] * len(res)
-        HashTableM = [None ] * len(res)
+        HashTableH = [" "] * len(res)
+        HashTableM = [" "] * len(res)
         start2 = timer()
         for i in res:
             key = 0
@@ -156,6 +183,7 @@ def index(request):
         print ("The word count is ", wordCounts)
         display_hash(HashTableH)
         display_hash(HashTableM)
+        mostOccur(HashTableH)
         print("Timer for ASCII hashing function:", end1 - start1)
         print("Timer for Division hashing function: ", end2 - start2)
         print("Timer for Multiplication hashing function:", end3 - start3)
