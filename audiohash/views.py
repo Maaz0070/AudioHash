@@ -34,6 +34,15 @@ def Hashing(res, Hashtable):
 
 def HashingH(keyvalue, Hashtable):
     return keyvalue % len(Hashtable)
+
+def HashingM(keyvalue,Hashtable):
+    A = .68
+    hashLength = len(Hashtable)
+    hash_key = keyvalue * A
+    hash_key = hash_key % 1
+    hash_key = hash_key * hashLength
+    hash_key = math.floor(hash_key)
+    return hash_key
   
   
 # Insert Function to add
@@ -41,17 +50,12 @@ def HashingH(keyvalue, Hashtable):
 def insert(Hashtable, keyvalue, value):
     hash_key = keyvalue % len(Hashtable)
     Hashtable[hash_key].append(value)
+      
+      
 def insertM(Hashtable,keyvalue, value):
    
-    A = .68
-    hashLength = len(Hashtable)
-    hash_key = keyvalue * A
-    hash_key = hash_key % 1
-    hash_key = hash_key * hashLength
+  hash_key = HashingM(keyvalue,Hashtable)
     
-    
-    hash_key = math.floor(hash_key)
-    print(Hashtable[hash_key])
     flag = False
     
     if Hashtable[hash_key] == None:
